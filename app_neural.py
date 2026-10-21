@@ -22,26 +22,27 @@ st.set_page_config(
 translations = {
     "EN": {
         "title": "🧠 Neural Network Demand & Sales Forecasting Hub (MLP)",
-        "subtitle": "Train a multi-layer neural network using Plan vs Actual historical patterns to forecast future demand accurately.",
+        "subtitle": "Train a multi-layer neural network using Period, Plan, and Seasonality to forecast future demand accurately.",
         "about_nn_title": "💡 How does this Neural Network work? (Explained Simply)",
         "about_nn_text": """
         Imagine a team of junior analysts (neurons) working together:
-        * **Input Layer:** They look at the `Plan` (management target) to understand what was intended.
-        * **Hidden Layers:** They analyze historical deviations (e.g., *“When the plan is X, how much does actual demand usually deviate in practice?”*).
-        * **Output Layer:** They apply this learned pattern to future periods where demand is blank to generate an intelligent forecast.
+        * **Input Layer:** They look at the `period` (seasonality/cycle), the `plan` (management target for the period), and past history.
+        * **Hidden Layers:** They analyze non-linear patterns (e.g., *“When the plan is X during month Y, how does actual demand deviate?”*).
+        * **Output Layer:** They generate the predicted `demand` for future rows where demand was left blank, **without modifying your plan**.
         """,
         "file_req": "📂 Dataset Structure & How to set up Future Periods for Forecasting",
         "file_desc": """
-        For stable learning, ensure your dataset has:
-        * **`period`** (or Month/Date identifier)
-        * **`plan`** (Management target/budget for every row, **including future periods**)
-        * **`demand`** (Actual sales/consumption — **leave this blank/empty for future periods** you want to predict!)
+        Ensure your dataset has:
+        * **`period`** (e.g., 1 to 12, or continuous numbers. The app handles seasonality automatically).
+        * **`plan`** (Management target/budget — **must be filled for ALL rows, including future periods**).
+        * **`demand`** (Actual sales — **leave blank/empty for future rows** you want to forecast!).
         """,
         "table_example_caption": "📋 Example of a correct input table structure:",
         "upload_label": "Upload your dataset (.xlsx or .csv)",
         "preview": "### Data Preview:",
         "target_col": "Select Target Column (Actual Demand / Sales):",
         "plan_col": "Select Plan Column:",
+        "period_col": "Select Period Column:",
         "params_title": "⚙️ Neural Network Hyperparameters Guide",
         "hidden_layers": "Hidden Layers Structure:",
         "hl_help": "Defines the architecture. E.g., `50, 50` means two hidden layers with 50 neurons each.",
@@ -50,25 +51,25 @@ translations = {
         "max_iter": "Max Training Iterations (Epochs):",
         "mi_help": "How many times the network reviews the dataset during training.",
         "train_btn": "🚀 Train Neural Network & Predict",
-        "success_msg": "✅ Neural network successfully trained, future demand predicted based on Plan patterns!",
+        "success_msg": "✅ Neural network successfully trained, future demand predicted!",
         "chart_title": "Neural Network Forecast vs History",
         "download_btn": "📥 Download Results as Excel"
     },
     "UA": {
         "title": "🧠 Нейромережевий хаб прогнозування попиту та продажів (MLP)",
-        "subtitle": "Навчіть багатошарову нейромережу на основі закономірностей План проти Факт для точного прогнозування.",
+        "subtitle": "Навчіть багатошарову нейромережу на основі періоду, плану та сезонності для точного прогнозування.",
         "about_nn_title": "💡 Як працює ця нейромережа? (Пояснення «на пальцях»)",
         "about_nn_text": """
         Уявіть команду аналітиків (нейронів):
-        * **Вхідний шар (Input):** Вивчають `план` (цільові показники керівництва).
-        * **Приховані шари (Hidden Layers):** Аналізують історичні відхилення (наприклад: *«якщо план становить таку цифру, наскільки реальний попит зазвичай відхиляється в реальності?»*).
-        * **Вихідний шар (Output):** Застосовує цей вивчений патерн до майбутніх місяців, де факт залишено порожнім, і будує адекватний прогноз.
+        * **Вхідний шар (Input):** Аналізують `період` (враховуючи річну циклічність/сезонність), `план` на цей період та історію.
+        * **Приховані шари (Hidden Layers):** Шукають зв'язки (наприклад: *«якщо в такому місяці план становить X, наскільки реальний попит зазвичай відхиляється?»*).
+        * **Вихідний шар (Output):** Заповнює прогнозний `demand` у тих рядках, де він був залишений порожнім, **абсолютно не чіпаючи ваш план**.
         """,
         "file_req": "📂 Структура файлу та як підготувати майбутні періоди для прогнозу",
         "file_desc": """
         Ваш файл має містити:
-        * Колонку з періодом (`period`)
-        * Колонку з планом (`plan` — заповнена і для історії, і **для майбутніх періодів**)
+        * Колонку з періодом (`period` — номери місяців або циклічність)
+        * Колонку з планом (`plan` — заповнена **для ВСІХ рядків, включаючи майбутні періоди**, щоб модель знала ціль)
         * Колонку з фактом (`demand` — для історії заповнена, а **для майбутніх місяців залишена порожньою**!)
         """,
         "table_example_caption": "📋 Приклад правильного оформлення таблиці:",
@@ -76,6 +77,7 @@ translations = {
         "preview": "### Попередній перегляд даних:",
         "target_col": "Оберіть цільову колонку (Фактичний попит / Demand):",
         "plan_col": "Оберіть колонку з Планом (Plan):",
+        "period_col": "Оберіть колонку з Періодом (Period):",
         "params_title": "⚙️ Гід по параметрах нейромережі",
         "hidden_layers": "Структура прихованих шарів:",
         "hl_help": "Наприклад, `50, 50` — це два шари по 50 нейронів.",
@@ -84,14 +86,14 @@ translations = {
         "max_iter": "Максимум епох навчання (Iterations):",
         "mi_help": "Кількість повних проходів мережі по набору даних.",
         "train_btn": "🚀 Навчити нейромережу та зробити прогноз",
-        "success_msg": "✅ Нейромережу успішно навчено, прогноз сформовано на основі зв'язку План-Факт!",
+        "success_msg": "✅ Нейромережу успішно навчено, прогноз попиту сформовано!",
         "chart_title": "Прогноз нейромережі у порівнянні з історією",
         "download_btn": "📥 Завантажити результати в Excel"
     }
 }
 
 # Вибір мови
-selected_lang = st.sidebar.selectbox("🌐 Language / Мова", ["EN", "UA"])
+selected_lang = st.sidebar.selectbox("🌐 Language / Моva", ["EN", "UA"])
 t = translations[selected_lang]
 
 st.title(t["title"])
@@ -117,9 +119,9 @@ with st.expander(t["file_req"], expanded=True):
     st.markdown(t["table_example_caption"])
     
     sample_df = pd.DataFrame({
-        "period": [1, 2, 3, 4, 5],
-        "plan": [150, 150, 176, 185, 200],
-        "demand": [155, 146, 172, "", ""]
+        "period": [1, 2, 3, 4, 5, 6],
+        "plan": [150, 150, 150, 150, 176, 185],
+        "demand": [155, 146, 146, 146, 172, ""]
     })
     st.dataframe(sample_df, use_container_width=True)
 
@@ -137,24 +139,28 @@ if uploaded_file is not None and HAS_MLP:
 
         target_col = st.selectbox(t["target_col"], df.columns)
         plan_col = st.selectbox(t["plan_col"], [c for c in df.columns if c != target_col])
+        period_col = st.selectbox(t["period_col"], [c for c in df.columns if c not in [target_col, plan_col]])
 
         if st.button(t["train_btn"], type="primary"):
             working_df = df.copy()
             
-            # Переконуємось, що числові колонки мають правильний формат
+            # Конвертація в числа
             working_df[target_col] = pd.to_numeric(working_df[target_col], errors='coerce')
             working_df[plan_col] = pd.to_numeric(working_df[plan_col], errors='coerce')
+            working_df[period_col] = pd.to_numeric(working_df[period_col], errors='coerce')
             
+            # Додаємо циклічний місяць (сезонність від 1 до 12 по кругу)
+            working_df['Cyclic_Month'] = ((working_df[period_col] - 1) % 12) + 1
             working_df['Row_Index'] = range(len(working_df))
             
-            # Історичні рядки: де є і plan, і demand (без NaN)
-            train_df = working_df.dropna(subset=[target_col, plan_col]).copy()
+            # Історичні рядки: де є і plan, і demand, і period
+            train_df = working_df.dropna(subset=[target_col, plan_col, period_col]).copy()
             
             if len(train_df) < 3:
-                st.error("⚠️ Error: Not enough valid historical data rows where both Plan and Demand are filled. Please check your data.")
+                st.error("⚠️ Error: Not enough valid historical data rows where Plan, Demand, and Period are filled. Please check your data.")
             else:
-                # Вхідний параметр для нейромережі — ТІЛЬКИ ПЛАН! (жодних лінійних індексів часу)
-                X_train = train_df[[plan_col]].values
+                # Вхідні параметри для нейромережі: циклічний місяць + план
+                X_train = train_df[['Cyclic_Month', plan_col]].values
                 y_train = train_df[target_col].values
                 
                 # Масштабування
@@ -169,7 +175,7 @@ if uploaded_file is not None and HAS_MLP:
                 except:
                     hidden_layer_sizes = (50, 50)
                 
-                # Навчання нейромережі на патерні План-Факт
+                # Навчання нейромережі
                 mlp = MLPRegressor(
                     hidden_layer_sizes=hidden_layer_sizes,
                     learning_rate_init=learning_rate_init,
@@ -179,19 +185,19 @@ if uploaded_file is not None and HAS_MLP:
                 
                 mlp.fit(X_train_scaled, y_train_scaled)
                 
-                # Робимо прогноз для ВСІХ рядків таблиці на основі плану
-                valid_plan_mask = working_df[plan_col].notna()
-                X_all = working_df.loc[valid_plan_mask, [plan_col]].values
+                # Прогноз для всіх рядків, де заповнений план і період
+                valid_mask = working_df[plan_col].notna() & working_df[period_col].notna()
+                X_all = working_df.loc[valid_mask, ['Cyclic_Month', plan_col]].values
                 
                 X_all_scaled = scaler_x.transform(X_all)
                 y_all_pred_scaled = mlp.predict(X_all_scaled)
                 
                 working_df['Neural_Net_Forecast'] = np.nan
-                working_df.loc[valid_plan_mask, 'Neural_Net_Forecast'] = np.round(
+                working_df.loc[valid_mask, 'Neural_Net_Forecast'] = np.round(
                     scaler_y.inverse_transform(y_all_pred_scaled.reshape(-1, 1)).ravel(), 2
                 )
                 
-                # Формуємо фінальну колоночку: для історії залишаємо факт, а для майбутнього вставляємо передбачений попит
+                # Фінальна колонка: історія залишається фактом, майбутнє заповнюється прогнозом нейромережі
                 working_df['Final_Output'] = working_df[target_col]
                 missing_indices = working_df[target_col].isna()
                 working_df.loc[missing_indices, 'Final_Output'] = working_df.loc[missing_indices, 'Neural_Net_Forecast']
@@ -199,11 +205,11 @@ if uploaded_file is not None and HAS_MLP:
                 st.success(t["success_msg"])
                 st.dataframe(working_df)
 
-                # Візуалізація результатів
+                # Візуалізація
                 fig, ax = plt.subplots(figsize=(10, 4))
                 ax.plot(working_df['Row_Index'], working_df[target_col], label="Historical Demand (Actual)", color="black", marker="o")
-                ax.plot(working_df['Row_Index'], working_df['Neural_Net_Forecast'], label="Neural Network Forecast (from Plan)", color="purple", linestyle="--", marker="x")
-                ax.plot(working_df['Row_Index'], working_df[plan_col], label="Plan", color="orange", linestyle=":")
+                ax.plot(working_df['Row_Index'], working_df['Neural_Net_Forecast'], label="Neural Network Forecast", color="purple", linestyle="--", marker="x")
+                ax.plot(working_df['Row_Index'], working_df[plan_col], label="Plan (Untouched)", color="orange", linestyle=":")
 
                 ax.set_title(t["chart_title"])
                 ax.legend()
