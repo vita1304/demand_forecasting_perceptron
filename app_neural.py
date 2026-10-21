@@ -27,7 +27,7 @@ translations = {
         "about_nn_text": """
         * **Training:** The neural network learns from historical `period` (seasonality/cycle) and `plan` to predict `demand`.
         * **Future Forecasting:** For future periods where `demand` is blank, the model forecasts the demand. 
-        * **Plan Protection:** Your original `plan` column is **never touched or overwritten**! If future plans are blank, the model estimates them internally for calculation only.
+        * **Plan Protection:** Your original `plan` column is **never touched or overwritten**!
         """,
         "file_req": "📂 Dataset Structure & How to set up Future Periods",
         "file_desc": """
@@ -61,7 +61,7 @@ translations = {
         "about_nn_text": """
         * **Навчання:** Мережа вивчає зв'язок між `періодом` (сезонністю/циклом), `планом` та фактичним `demand` у минулому.
         * **Прогноз:** Для майбутніх місяців, де `demand` залишено порожнім, модель розраховує прогнозний попит.
-        * **Захист плану:** Ваша колонка `plan` **ніколи не перезаписується і не чіпається**! Якщо в майбутніх рядках план порожній, модель використовує внутрішню оцінку для розрахунку, залишаючи ваші вхідні дані в безпеці.
+        * **Захист плану:** Ваша колонка `plan` **ніколи не перезаписується і не чіпається**!
         """,
         "file_req": "📂 Структура файлу та підготовка майбутніх періодів",
         "file_desc": """
@@ -133,9 +133,15 @@ if uploaded_file is not None and HAS_MLP:
         st.dataframe(df.head())
 
         cols = list(df.columns)
-        target_col = st.selectbox(t["target_col"], cols)
-        plan_col = st.selectbox(t["plan_col"], [c for c in cols if c != target_col])
-        period_col = st.selectbox(t["period_col"], [c for c in cols if c not in [target_col, plan_col]])
+        
+        # Розумний автовибір колонок за назвами, якщо вони є у файлі
+        default_target = cols[2] if len(cols) > 2 else cols[0]
+        default_plan = cols[1] if len(cols) > 1 else cols[0]
+        default_period = cols[0]
+
+        target_col = st.selectbox(t["target_col"], cols, index=cols.index(default_target) if default_target in cols else 0)
+        plan_col = st.selectbox(t["plan_col"], cols, index=cols.index(default_plan) if default_plan in cols else 0)
+        period_col = st.selectbox(t["period_col"], cols, index=cols.index(default_period) if default_period in cols else 0)
 
         if st.button(t["train_btn"], type="primary"):
             working_df = df.copy()
@@ -149,11 +155,11 @@ if uploaded_file is not None and HAS_MLP:
             working_df['Cyclic_Month'] = ((working_df[period_col] - 1) % 12) + 1
             working_df['Row_Index'] = range(len(working_df))
             
-            # Навчальна вибірка: де є факт (demand), план і період
-            train_df = working_df.dropna(subset=[target_col, plan_col, period_col]).copy()
+            # Жорстка фільтрація історії: тільки рядки, де є реальні числа в period, plan та demand
+            train_df = working_df.dropna(subset=[target_col, plan_col, period_col, 'Cyclic_Month']).copy()
             
             if len(train_df) < 3:
-                st.error("⚠️ Error: Not enough valid historical rows where Demand, Plan, and Period are filled.")
+                st.error("⚠️ Error: Not enough valid historical rows where Demand, Plan, and Period are properly filled with numbers.")
             else:
                 # Входи для моделі: циклічний місяць + план
                 X_train = train_df[['Cyclic_Month', plan_col]].values
@@ -179,17 +185,21 @@ if uploaded_file is not None and HAS_MLP:
                 
                 mlp.fit(X_train_scaled, y_train_scaled)
                 
-                # Підготовка даних для прогнозу всіх рядків
-                # Якщо план відсутній у майбутньому, підставляємо середнє для обчислення моделі, НЕ чіпаючи оригінальну колонку plan
+                # Підготовка даних для прогнозу всіх рядків (безпечна обробка можливих пропусків у плані)
                 calc_plan = working_df[plan_col].copy()
                 mean_plan = train_df[plan_col].mean()
                 calc_plan.fillna(mean_plan, inplace=True)
                 
-                X_all = working_df[['Cyclic_Month']].copy()
-                X_all['Plan_Calc'] = calc_plan
-                X_all_vals = X_all.values
+                calc_cyclic = working_df['Cyclic_Month'].copy()
+                mean_cyclic = train_df['Cyclic_Month'].mean()
+                calc_cyclic.fillna(mean_cyclic, inplace=True)
                 
-                X_all_scaled = scaler_x.transform(X_all_vals)
+                X_all = pd.DataFrame({
+                    'Cyclic_Month': calc_cyclic,
+                    'Plan_Calc': calc_plan
+                }).values
+                
+                X_all_scaled = scaler_x.transform(X_all)
                 y_all_pred_scaled = mlp.predict(X_all_scaled)
                 
                 working_df['Neural_Net_Forecast'] = np.round(
