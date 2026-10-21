@@ -22,79 +22,69 @@ st.set_page_config(
 translations = {
     "EN": {
         "title": "🧠 Neural Network Demand & Sales Forecasting Hub (MLP)",
-        "subtitle": "Train a multi-layer neural network on historical data (supporting Plan vs Actual features) to predict future sales or demand.",
+        "subtitle": "Train a multi-layer neural network using Period, Plan, and historical Demand/Sales to forecast future periods accurately.",
         "about_nn_title": "💡 How does this Neural Network work? (Explained Simply)",
         "about_nn_text": """
         Imagine a team of junior analysts (neurons) working together:
-        * **Input Layer:** They look at historical data (e.g., past demand/sales, planned targets, or time index).
-        * **Hidden Layers:** They talk to each other, testing combinations and non-linear patterns (e.g., *“If the planned volume was high, but actual sales dropped last month, how will it affect next month?”*).
-        * **Output Layer:** They combine their conclusions to output the final forecast for future periods.
-        
-        *Note: The exact same logic and mechanics apply whether you are forecasting **Demand**, **Sales**, or any other supply chain metric!*
+        * **Input Layer:** They look at the `Period`, the `Plan` (what management planned), and past history.
+        * **Hidden Layers:** They analyze non-linear patterns (e.g., *“When the plan is set to X, how does actual demand usually deviate?”*).
+        * **Output Layer:** They combine their conclusions to output the accurate forecast for future periods where demand was left blank.
         """,
         "file_req": "📂 Dataset Structure & How to set up Future Periods for Forecasting",
         "file_desc": """
-        For stable learning, it is recommended to have at least **12–24 historical rows**.
-        * **How to structure your file for future forecasting:**
-          1. In the upper rows, write your historical data (e.g., Months 1 to 12) where you have both **Plan** and actual **Demand / Sales**.
-          2. In the lower rows (future periods you want to forecast, e.g., Months 13, 14, 15), leave the target column (**Demand / Sales**) **completely empty (blank)**. 
-          3. Fill in the **Plan** column for those future months if you have targets.
-          4. The neural network will train on your history and automatically fill in the blank cells with its intelligent forecast!
+        For stable learning, ensure your dataset has:
+        * **`period`** (or Time Index)
+        * **`plan`** (Management target/budget for every row, including future periods)
+        * **`demand`** (Actual sales/consumption — **leave this blank/empty for future periods** you want to predict!)
         """,
-        "table_example_caption": "📋 Example of how your input table should look (notice the blank cells for future forecast):",
+        "table_example_caption": "📋 Example of a correct input table structure:",
         "upload_label": "Upload your dataset (.xlsx or .csv)",
         "preview": "### Data Preview:",
         "target_col": "Select Target Column (Actual Demand / Sales):",
-        "feature_col": "Select Optional Feature Column (e.g., Plan / Target):",
-        "use_feature": "Use Plan/Feature column for training",
+        "plan_col": "Select Plan Column:",
         "params_title": "⚙️ Neural Network Hyperparameters Guide",
         "hidden_layers": "Hidden Layers Structure:",
-        "hl_help": "Defines the architecture. E.g., `50, 50` means two hidden layers with 50 neurons each. More layers catch complex patterns, but require more data.",
+        "hl_help": "Defines the architecture. E.g., `50, 50` means two hidden layers with 50 neurons each.",
         "learning_rate": "Initial Learning Rate:",
-        "lr_help": "Controls how fast weights update. Too high = model jumps around and fails to learn. Too low = training takes forever (default: 0.001).",
+        "lr_help": "Controls how fast weights update (default: 0.001).",
         "max_iter": "Max Training Iterations (Epochs):",
-        "mi_help": "How many times the network reviews the entire dataset during training.",
+        "mi_help": "How many times the network reviews the dataset during training.",
         "train_btn": "🚀 Train Neural Network & Predict",
-        "success_msg": "✅ Neural network successfully trained and forecast generated for future periods!",
+        "success_msg": "✅ Neural network successfully trained, future demand predicted!",
         "chart_title": "Neural Network Forecast vs History",
         "download_btn": "📥 Download Results as Excel"
     },
     "UA": {
         "title": "🧠 Нейромережевий хаб прогнозування попиту та продажів (MLP)",
-        "subtitle": "Навчіть багатошарову нейромережу на історичних даних (з підтримкою факторів План проти Факт) для прогнозування майбутніх продажів чи потреби.",
+        "subtitle": "Навчіть багатошарову нейромережу на основі періоду, плану та фактичних даних для точного прогнозування майбутнього.",
         "about_nn_title": "💡 Як працює ця нейромережа? (Пояснення «на пальцях»)",
         "about_nn_text": """
         Уявіть команду аналітиків (нейронів):
-        * **Вхідний шар (Input):** Аналітики вивчають історію (попередній попит/продажі, планові показники чи час).
-        * **Приховані шари (Hidden Layers):** Вони обговорюють зв'язки (наприклад: *«якщо планові закупівлі зросли, а минулого місяця був спад, як це вплине на майбутнє?»*).
-        * **Вихідний шар (Output):** Видає фінальний прогноз для майбутніх періодів.
-        
-        *Примітка: Ця ж сама логіка та математика працює як для прогнозування попиту (**Demand**), так і для прогнозування продажів (**Sales Forecast**) чи будь-яких інших подібних показників у бізнесі!*
+        * **Вхідний шар (Input):** Вивчають `період`, `план` (що планувалося) та історію.
+        * **Приховані шари (Hidden Layers):** Шукають закономірності (наприклад: *«якщо план становить таку цифру, наскільки реальний попит зазвичай відхиляється?»*).
+        * **Вихідний шар (Output):** Заповнює порожні клітинки майбутніх періодів прогнозом.
         """,
         "file_req": "📂 Структура файлу та як підготувати майбутні періоди для прогнозу",
         "file_desc": """
-        Для стабільного навчання бажано мати хоча б **12–24 історичні рядки**.
-        * **Як правильно підготувати файл:**
-          1. У верхніх рядках запишіть історію (наприклад, місяці 1–12), де є і **Plan**, і фактичний **Demand / Sales**.
-          2. У нижніх рядках (періоди, які ви хочете спрогнозувати уперед, наприклад, місяці 13, 14, 15) залиште цільову колонку (**Demand / Sales**) **абсолютно порожньою**.
-          3. У колонці **Plan** для цих майбутніх місяців можете вказати планові показники.
-          4. Нейромережа сама навчиться на історії, а в порожні клітинки майбутніх місяців запише свій прогноз!
+        Ваш файл має містити:
+        * Колонку з періодом (наприклад, `period`)
+        * Колонку з планом (`plan` — заповнена і для історії, і для майбутніх періодів, які треба спрогнозувати)
+        * Колонку з фактом (`demand` — для історії заповнена, а **для майбутніх місяців залишена порожньою**!)
         """,
-        "table_example_caption": "📋 Приклад того, як має виглядати ваша таблиця (зверніть увагу на порожні клітинки для прогнозу):",
-        "upload_label": "Завантажте ваш набір даних (.xlsx або додатковий файл)",
+        "table_example_caption": "📋 Приклад правильного оформлення таблиці:",
+        "upload_label": "Завантажте ваш набір даних (.xlsx або .csv)",
         "preview": "### Попередній перегляд даних:",
-        "target_col": "Оберіть цільову колонку (Фактичний попит / Продажі):",
-        "feature_col": "Оберіть додатковий фактор (наприклад, План / Бюджет):",
-        "use_feature": "Використовувати колонку План для навчання",
+        "target_col": "Оберіть цільову колонку (Фактичний попит / Demand):",
+        "plan_col": "Оберіть колонку з Планом (Plan):",
         "params_title": "⚙️ Гід по параметрах нейромережі",
         "hidden_layers": "Структура прихованих шарів:",
-        "hl_help": "Визначає «розум» мережі. Наприклад, `50, 50` — це два шари по 50 нейронів. Більше шарів — складніші закономірності, але потрібно більше даних.",
+        "hl_help": "Наприклад, `50, 50` — це два шари по 50 нейронів.",
         "learning_rate": "Швидкість навчання (Learning Rate):",
-        "lr_help": "Швидкість, з якою нейрони виправляють помилки. Завелико — мережа «стрибає» і не вчиться; замало — вчиться надто повільно (рекомендовано 0.001).",
+        "lr_help": "Швидкість виправлення помилок мережею (рекомендовано 0.001).",
         "max_iter": "Максимум епох навчання (Iterations):",
-        "mi_help": "Скільки разів нейромережа повністю перегляне ваш масив даних у процесі тренування.",
+        "mi_help": "Кількість повних проходів мережі по набору даних.",
         "train_btn": "🚀 Навчити нейромережу та зробити прогноз",
-        "success_msg": "✅ Нейромережу успішно навчено, прогноз на майбутні періоди сформовано!",
+        "success_msg": "✅ Нейромережу успішно навчено, прогноз попиту сформовано!",
         "chart_title": "Прогноз нейромережі у порівнянні з історією",
         "download_btn": "📥 Завантажити результати в Excel"
     }
@@ -110,9 +100,8 @@ st.markdown(t["subtitle"])
 with st.expander(t["about_nn_title"], expanded=False):
     st.markdown(t["about_nn_text"])
 
-# Налаштування гіперпараметрів із детальними підказками у сайдбарі
+# Налаштування гіперпараметрів у сайдбарі
 st.sidebar.markdown(f"### {t['params_title']}")
-
 layers_input = st.sidebar.text_input(t["hidden_layers"], value="50, 50")
 st.sidebar.caption(t["hl_help"])
 
@@ -122,15 +111,15 @@ st.sidebar.caption(t["lr_help"])
 max_iter = st.sidebar.slider(t["max_iter"], min_value=100, max_value=2000, value=500, step=100)
 st.sidebar.caption(t["mi_help"])
 
-# Вимоги до файлу та наочна таблиця-приклад із порожніми клітинками
+# Вимоги до файлу та наочна таблиця-приклад
 with st.expander(t["file_req"], expanded=True):
     st.markdown(t["file_desc"])
     st.markdown(t["table_example_caption"])
     
     sample_df = pd.DataFrame({
-        "Period": ["Month 1 (History)", "Month 2 (History)", "Month 3 (History)", "Month 4 (Forecast Target)", "Month 5 (Forecast Target)"],
-        "Plan": [1000, 1100, 1050, 1200, 1250],
-        "Demand_or_Sales": [950, 1120, 1020, "", ""]
+        "period": [1, 2, 3, 4, 5],
+        "plan": [150, 150, 176, 185, 200],
+        "demand": [155, 146, 172, "", ""]
     })
     st.dataframe(sample_df, use_container_width=True)
 
@@ -147,34 +136,28 @@ if uploaded_file is not None and HAS_MLP:
         st.dataframe(df.head())
 
         target_col = st.selectbox(t["target_col"], df.columns)
-        
-        use_feat = st.checkbox(t["use_feature"], value=False)
-        feature_col = None
-        if use_feat:
-            feature_col = st.selectbox(t["feature_col"], [c for c in df.columns if c != target_col])
+        plan_col = st.selectbox(t["plan_col"], [c for c in df.columns if c != target_col])
 
         if st.button(t["train_btn"], type="primary"):
             working_df = df.copy()
-            working_df['Time_Index'] = range(len(working_df))
             
-            # Відокремлюємо історичні рядки (де є фактичний таргет) від майбутніх (де таргет порожній)
+            # Визначаємо історичні рядки (де є фактичний demand) та майбутні (де порожньо)
             historical_mask = working_df[target_col].notna() & (working_df[target_col] != "")
             
             train_df = working_df[historical_mask].copy()
             predict_df = working_df[~historical_mask].copy()
             
             if len(train_df) < 3:
-                st.error("⚠️ Error: Not enough historical data rows with values to train the neural network. Please check your target column.")
+                st.error("⚠️ Error: Not enough historical data rows with values in the target column to train the model.")
             else:
-                # Формуємо вхідні дані для навчання (X) та ціль (y)
-                if use_feat and feature_col:
-                    X_train = train_df[['Time_Index', feature_col]].values
-                else:
-                    X_train = train_df[['Time_Index']].values
-                    
+                # Вхідні параметри для навчання: індекс часу (номер рядка) та план
+                train_df['Time_Index'] = range(len(train_df))
+                working_df['Time_Index'] = range(len(working_df))
+                
+                X_train = train_df[['Time_Index', plan_col]].values
                 y_train = train_df[target_col].values
                 
-                # Масштабування даних
+                # Масштабування даних для стабільної роботи нейромережі
                 scaler_x = StandardScaler()
                 scaler_y = StandardScaler()
                 
@@ -196,17 +179,16 @@ if uploaded_file is not None and HAS_MLP:
                 
                 mlp.fit(X_train_scaled, y_train_scaled)
                 
-                # Прогноз на всю таблицю
-                if use_feat and feature_col:
-                    X_all = working_df[['Time_Index', feature_col]].values
-                else:
-                    X_all = working_df[['Time_Index']].values
-                    
+                # Робимо прогноз для ВСІХ рядків (і для історії, і для майбутнього)
+                X_all = working_df[['Time_Index', plan_col]].values
                 X_all_scaled = scaler_x.transform(X_all)
                 y_all_pred_scaled = mlp.predict(X_all_scaled)
-                working_df['Neural_Net_Forecast'] = scaler_y.inverse_transform(y_all_pred_scaled.reshape(-1, 1)).ravel()
                 
-                # Заповнюємо порожні клітинки майбутніх періодів прогнозованими значеннями
+                working_df['Neural_Net_Forecast'] = np.round(
+                    scaler_y.inverse_transform(y_all_pred_scaled.reshape(-1, 1)).ravel(), 2
+                )
+                
+                # Формуємо фінальну вихідну колоночку: для історії залишаємо факт, а для майбутнього вставляємо прогноз нейромережі
                 working_df['Final_Output'] = working_df[target_col]
                 missing_indices = working_df[target_col].isna() | (working_df[target_col] == "")
                 working_df.loc[missing_indices, 'Final_Output'] = working_df.loc[missing_indices, 'Neural_Net_Forecast']
@@ -214,24 +196,21 @@ if uploaded_file is not None and HAS_MLP:
                 st.success(t["success_msg"])
                 st.dataframe(working_df)
 
-                # Графік
+                # Візуалізація результатів на графіку
                 fig, ax = plt.subplots(figsize=(10, 4))
-                # Історія
-                ax.plot(train_df['Time_Index'], train_df[target_col], label="Historical Data (Actual)", color="black", marker="o")
-                # Прогноз моделі
-                ax.plot(working_df['Time_Index'], working_df['Neural_Net_Forecast'], label="Neural Network Model Forecast", color="purple", linestyle="--", marker="x")
-                
-                if use_feat and feature_col:
-                    ax.plot(working_df['Time_Index'], working_df[feature_col], label="Plan / Feature", color="orange", linestyle=":")
+                ax.plot(working_df['Time_Index'], working_df[target_col], label="Historical Demand (Actual)", color="black", marker="o")
+                ax.plot(working_df['Time_Index'], working_df['Neural_Net_Forecast'], label="Neural Network Forecast", color="purple", linestyle="--", marker="x")
+                ax.plot(working_df['Time_Index'], working_df[plan_col], label="Plan", color="orange", linestyle=":")
 
                 ax.set_title(t["chart_title"])
                 ax.legend()
                 ax.grid(True, linestyle=":", alpha=0.6)
                 st.pyplot(fig)
 
+                # Експорт результатів у Excel
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                    working_df.to_excel(writer, index=False, sheet_name="NeuralNet_Forecast_Results")
+                    working_df.to_excel(writer, index=False, sheet_name="NeuralNet_Forecast")
                 
                 st.download_button(
                     label=t["download_btn"],
