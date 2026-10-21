@@ -191,4 +191,37 @@ if uploaded_file is not None and HAS_MLP:
                     scaler_y.inverse_transform(y_all_pred_scaled.reshape(-1, 1)).ravel(), 2
                 )
                 
-                # Формуємо фінальну вихідну колоночку: для історії залишаємо
+                # Формуємо фінальну вихідну колоночку: для історії залишаємо факт, а для майбутнього вставляємо прогноз
+                working_df['Final_Output'] = working_df[target_col]
+                missing_indices = working_df[target_col].isna()
+                working_df.loc[missing_indices, 'Final_Output'] = working_df.loc[missing_indices, 'Neural_Net_Forecast']
+
+                st.success(t["success_msg"])
+                st.dataframe(working_df)
+
+                # Візуалізація результатів
+                fig, ax = plt.subplots(figsize=(10, 4))
+                ax.plot(working_df['Time_Index'], working_df[target_col], label="Historical Demand (Actual)", color="black", marker="o")
+                ax.plot(working_df['Time_Index'], working_df['Neural_Net_Forecast'], label="Neural Network Forecast", color="purple", linestyle="--", marker="x")
+                ax.plot(working_df['Time_Index'], working_df[plan_col], label="Plan", color="orange", linestyle=":")
+
+                ax.set_title(t["chart_title"])
+                ax.legend()
+                ax.grid(True, linestyle=":", alpha=0.6)
+                st.pyplot(fig)
+
+                output = io.BytesIO()
+                with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    working_df.to_excel(writer, index=False, sheet_name="NeuralNet_Forecast")
+                
+                st.download_button(
+                    label=t["download_btn"],
+                    data=output.getvalue(),
+                    file_name="neural_net_forecast_output.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+
+    except Exception as e:
+        st.error(f"Error during neural network training: {e}")
+elif not HAS_MLP:
+    st.error("Scikit-learn is not installed properly.")
